@@ -328,7 +328,7 @@ db.movies.find( {year: {$gte: 2015}}, {title:1, year:1, director:1, _id:0} )
 **<u>Your query</u>**:
 
 ```js
-
+db.movies.find( {year: {$lte: 2000}}, {title:1, year:1, director:1, _id:0} )
 ```
 
   
@@ -342,7 +342,11 @@ db.movies.find( {year: {$gte: 2015}}, {title:1, year:1, director:1, _id:0} )
 **<u>Your query</u>**:
 
 ```js
-
+db.movies.find({
+     year: { $in: [2000, 2005, 2010] }
+    },
+    {title: 1, year: 1}
+).sort( { year: 1})
 ```
 
   
@@ -354,7 +358,12 @@ db.movies.find( {year: {$gte: 2015}}, {title:1, year:1, director:1, _id:0} )
 ### 18. Retrieve all documents from the `movies` collection created in the years 1999 and 2010 and excluding the movie with `title` "Inception"
 
 ```js
-
+db.movies.find({
+ $and: [
+   { year: { $in: [1999, 2010] }  },
+   { title : { $ne: "Inception" }  }
+ ]
+}, { title: 1, year: 1})
 ```
 
  
@@ -368,7 +377,7 @@ db.movies.find( {year: {$gte: 2015}}, {title:1, year:1, director:1, _id:0} )
 **<u>Your query</u>**:
 
 ```js
-
+db.movies.deleteMany({year: 1999})
 ```
 
 
@@ -377,12 +386,12 @@ db.movies.find( {year: {$gte: 2015}}, {title:1, year:1, director:1, _id:0} )
 
 
 
-### 20. Delete document from the `movies` collection with the `_id`  "5cbf03ca570ffc7ef7ac4869".
+### 20. Delete document from the `movies` collection with the `_id`  "5dca9d75b5bb0ff37ff97015".
 
  **<u>Your query</u>**:
 
 ```js
-
+db.movies.deleteOne({_id: ObjectId("5dca9d75b5bb0ff37ff97015")})
 ```
 
  
@@ -407,7 +416,7 @@ var ratingObj = {
 **<u>Your query</u>**:
 
 ```js
-
+db.movies.updateMany({ year: 2017 }, {$set: {rating: ratingObj } })
 ```
 
  
@@ -425,7 +434,14 @@ var ratingObj = {
 **<u>Your query</u>**:
 
 ```js
-
+db.movies.updateOne(
+  {title: "Dunkirk" }, 
+  {$set: { 
+    "rating.rating": "PG-13",
+    "rating.violence": true,
+    "rating.strong_lenguage": true
+  } 
+  } )
 ```
 
  
@@ -449,7 +465,18 @@ let moviesToDelete = ["12 Angry Men", "Se7en", "Cidade de Deus", "Braveheart"]
 **<u>Your query</u>**:
 
 ```js
+db.movies.deleteMany({ 
+  $or: [
+    { title: "12 Angry Men"},
+    { title: "Se7en"},
+    { title: "Cidade de Deus"},
+    { title: "Braveheart"},
+  ]
+})
 
+db.movies.deleteMany({ 
+ title: { $in: moviesToDelete }
+})
 ```
 
 
